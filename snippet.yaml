@@ -1573,7 +1573,9 @@ script:
     
 template:
   content: |
-    <link rel="https://raw.githubusercontent.com/JhonnyReisDG/AutomacaoWord/refs/heads/main/style.css" />
+    <head>
+      <link rel="https://raw.githubusercontent.com/JhonnyReisDG/AutomacaoWord/refs/heads/main/style.css" />
+    </head>
     <div class="container">
       <!-- V1.1 -->
       <!-- Coluna 1: tags gerais -->
@@ -1955,4 +1957,5 @@ template:
     </div>
     </div>
     </div>
+
 

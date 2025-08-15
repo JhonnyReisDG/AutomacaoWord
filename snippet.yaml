@@ -1,147 +1,1955 @@
-name: Ferramenta de TAGs
+name: TAGs padrões do Word
 host: WORD
 type: snippet
-description: Automatização da marcação de TAGs no Word para editoras.
+description: Automatização da marcação de TAGs no Word para editores.
 
 script:
   content: |
-    // JavaScript aqui (colar o código completo de script.js entre estas linhas)
-    (function () {
-      Office.onReady(function () {
-        const mainButtons = document.getElementsByClassName("main-btn");
-        for (let i = 0; i < mainButtons.length; i++) {
-          mainButtons[i].addEventListener("click", function () {
-            const subMenu = this.nextElementSibling;
-            subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
-          });
-        }
+    //V1.1
 
-        const allSubButtons = document.getElementsByClassName("btn");
-        for (let i = 0; i < allSubButtons.length; i++) {
-          allSubButtons[i].addEventListener("click", handleButtonClick);
-        }
-
-        document.querySelectorAll(".main-btn").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const group = this.parentElement;
-            group.classList.toggle("active");
-          });
-        });
-
-        document.querySelectorAll(".subgroup-title").forEach((title) => {
-          title.addEventListener("click", function () {
-            const subgroup = this.parentElement;
-            subgroup.classList.toggle("active");
-          });
-        });
+(function () {
+  Office.onReady(function () {
+    const mainButtons = document.getElementsByClassName("main-btn");
+    for (let i = 0; i < mainButtons.length; i++) {
+      mainButtons[i].addEventListener("click", function () {
+        const subMenu = this.nextElementSibling;
+        subMenu.style.display = subMenu.style.display === "block" ? "none" : "block";
       });
+    }
 
-      async function handleButtonClick(event) {
-        const action = event.target.getAttribute("data-action");
-        // Aqui entra o restante da lógica do seu JavaScript (substituir por completo 👇)
-        // ...
-      }
-    })();
+    const allSubButtons = document.getElementsByClassName("btn");
+    for (let i = 0; i < allSubButtons.length; i++) {
+      allSubButtons[i].addEventListener("click", handleButtonClick);
+    }
+    document.querySelectorAll(".main-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const group = this.parentElement;
+        group.classList.toggle("active");
+      });
+    });
+
+    document.querySelectorAll(".subgroup-title").forEach((title) => {
+      title.addEventListener("click", function () {
+        const subgroup = this.parentElement;
+        subgroup.classList.toggle("active");
+      });
+    });
+  });
+
+  async function handleButtonClick(event) {
+    const action = event.target.getAttribute("data-action");
+    let text = "";
+    let color = "";
+
+    switch (action) {
+      case "pagina":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const p1 = range.insertParagraph("<página X>", Word.InsertLocation.before);
+          p1.style = "arco_RECADO_ART";
+          await context.sync();
+        });
+        return;
+
+      case "paginaxx":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const p1 = range.insertParagraph("<página X e X>", Word.InsertLocation.before);
+          p1.style = "arco_RECADO_ART";
+          await context.sync();
+        });
+        return;
+
+      case "linha":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const p1 = range.insertParagraph("<linha>", Word.InsertLocation.before);
+          p1.style = "arco_RECADO_ART";
+          await context.sync();
+        });
+        return;
+
+      case "titulo":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<título>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "Al.correta":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<alternativa correta>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "cotas":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<abre cotas>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_IMAGEM_COTA_TEXTO";
+          const pAfter = range.insertParagraph("<fecha cotas>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "coluna_f":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<abre coluna falsa>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha coluna falsa>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "lacuna":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          range.load("text");
+          await context.sync();
+          const abreLacuna = range.insertText("<abre lacuna>", Word.InsertLocation.before);
+          abreLacuna.font.color = "#EE0000";
+          abreLacuna.font.size = 10;
+          const fechaLacuna = range.insertText("<fecha lacuna>", Word.InsertLocation.after);
+          fechaLacuna.font.color = "#EE0000";
+          fechaLacuna.font.size = 10;
+          range.font.color = "#00B0F0";
+          range.font.size = 10;
+
+          await context.sync();
+        });
+        return;
+
+      case "destaque":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const abre = range.insertText("<abre destaque>", Word.InsertLocation.before);
+          abre.font.color = "#EE0000";
+          abre.font.size = 10;
+          const fecha = range.insertText("<fecha destaque>", Word.InsertLocation.after);
+          fecha.font.color = "#EE0000";
+          fecha.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "destaque.glos":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const abre = range.insertText("<abre destaque glossário>", Word.InsertLocation.before);
+          abre.font.color = "#EE0000";
+          abre.font.size = 10;
+          const fecha = range.insertText("<fecha destaque glossário>", Word.InsertLocation.after);
+          fecha.font.color = "#EE0000";
+          fecha.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "destaque.hip":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const abre = range.insertText("<abre destaque hiperlink>", Word.InsertLocation.before);
+          abre.font.color = "#EE0000";
+          abre.font.size = 10;
+          const fecha = range.insertText("<fecha destaque hiperlink>", Word.InsertLocation.after);
+          fecha.font.color = "#EE0000";
+          fecha.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      // TAGs SAE
+      case "agora_voce":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção agora você já sabe>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conectando":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conectando os pontos>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conversa_vai":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conversa vai>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conversa_vem":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conversa vem>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "glossario":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção glossário>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "organizando":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção organizando o conhecimento>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "para_saber":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção para saber mais>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "saberes":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção saberes em ação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "testando":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção testando as ideias>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      // Icones SAE
+      case "audio_sae":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone áudio>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "caderno":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone caderno>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "oralidade":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone oralidade>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      // Boxes SAE
+      case "conjunto":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box conjunto>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "situacao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box situação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "observacao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box observação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "procedimento":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box procedimento>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "resolucao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box resolução>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "conceito":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box sistematização/conceito>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "trecho":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box trecho>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "exemplo":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box exemplo>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      // Seções SPE EM
+      case "atividades":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção atividades>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conexoes":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conexões>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "foco":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção foco na aprovação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "gabarito":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção gabarito>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "organize":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção organize as ideias>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "objetivos":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção objetivos do capítulo>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "coisas_da_gente":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção coisas da gente>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "fazendo_ciencia":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção fazendo ciência>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "reflexao_em_acao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção reflexão em ação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "geografia_em_foco":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção geografia em foco>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "interpretando":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção interpretando documentos>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "voce_faz_historia":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção você faz história>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "oficina":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção oficina de texto>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "em_teste":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção matemática em teste>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "em_acao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção matemática em ação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "em_detalhes":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção matemática em detalhes>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "inicio_de_conversa":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção para início de conversa>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      // Seções SPE AF
+      case "proposta_1":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 1>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_2":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 2>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_3":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 3>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_4":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 4>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_5":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 5>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_6":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 6>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_7":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 7>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "proposta_8":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<proposta 8>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      // Icones SPE
+      case "audio_spe":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone áudio>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "atividades_facil":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone atividades fácil>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "atividades_medio":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone atividades médio>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "atividades_dificil":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone atividades difícil>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      // Boxes SPE
+      case "citacao":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box citação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_CITACAO";
+
+          await context.sync();
+        });
+        return;
+
+      case "box_destaque":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box destaque>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "box_glossario":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box glossário>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "geral":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box geral>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      // Seções PIA
+      case "atividades_PIA":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção atividades>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "construindo_PIA":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção construindo ideias>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "acao_PIA":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção em ação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "fazer_PIA":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção fazer e aprender>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "pesquisa":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção pesquisa>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      // Icones PIA
+      case "interessante":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone interessante>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      // Seções CQT
+      case "atividades_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção atividades>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conectado_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conectado>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conquistar":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção conquistar-se>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "curiosidade_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção curiosidade>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "emocoes":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção emoções em pauta>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "ideias_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção ideias em ação>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "conquistei":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção o que já conquistei>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "pesquisa_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção pesquisa>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "saiba_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção saiba mais>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "troca":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção troca de ideias>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "activities":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção activities>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "around":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção around the world>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "goals":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção goals>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "action":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção in action>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "know":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção know yourself>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "language":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção language in use>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "listen":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção lets listen>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "see":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção lets see it again>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "start":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção lets start>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "look":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção look it up>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "reading":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção reading>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "sing":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção sing along>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "speaking":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção speaking>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "thinking":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção thinking together>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "going_to_see":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção what you are going to see>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "writing":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção writing>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "brasileira":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção arte brasileira>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "festa":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção em festa>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "galeria":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção galeria>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "pratica_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção ciência em prática>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "cartografica":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção leitura cartográfica>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "geografico":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção olhar geográfico>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "documentos_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção interpretando documentos>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "historias_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção outras histórias>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "escreve_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção como se escreve>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "lingua_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção estudo da língua>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "texto_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção estudo do texto>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "texto_escrito":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção produção de texto escrito>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "texto_oral":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção produção de texto oral>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "problemas_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção criar e resolver problemas>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "olhar":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção ampliando o olhar>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "partida":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção ponto de partida>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      case "final":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<seção reflexão final>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          const pAfter = range.insertParagraph("<fecha seção>", Word.InsertLocation.after);
+          pAfter.style = "arco_RECADO_ART";
+
+          await context.sync();
+        });
+        return;
+
+      // Icones CQT
+      case "audio_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone áudio>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "caderno_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone caderno>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "calculadora_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone calculadora>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "ciencias_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone ciências>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "cuidado":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone cuidado>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "desafio_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone desafio>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "grupo_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone grupo>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "material_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone material extra>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      case "voz_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const inserted = range.insertText("<ícone voz>", Word.InsertLocation.before);
+          inserted.font.color = "#EE0000";
+          inserted.font.size = 10;
+          await context.sync();
+        });
+        return;
+
+      // Boxes CQT
+      case "destaque_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box destaque>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "exercicio_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box exercício>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "geral_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box geral>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "glossario_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box glossário>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "hiperlink_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box hiperlink>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "internet_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box internet>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "jornal_CQT":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box jornal>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+
+      case "explicativo":
+        await Word.run(async (context) => {
+          const range = context.document.getSelection();
+          const pBefore = range.insertParagraph("<box texto explicativo>", Word.InsertLocation.before);
+          pBefore.style = "arco_RECADO_ART";
+          range.style = "arco_BOX_GERAL_TEXTO";
+
+          await context.sync();
+        });
+        return;
+    }
+
+    // Para os demais casos, mantém o comportamento padrão
+    await Word.run(async (context) => {
+      const range = context.document.getSelection();
+      const paragraph = range.insertParagraph(text, Word.InsertLocation.after);
+      paragraph.style = "arco_TEXTO";
+      paragraph.font.color = color;
+      await context.sync();
+    });
+  }
+})();
+
     
 template:
   content: |
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Tags Automáticas</title>
-        <style>
-          /* CSS aqui */
-          .container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-family: Arial, sans-serif;
-          }
-          .column {
-            background: #f8f8f8;
-            padding: 10px;
-            border-radius: 8px;
-            width: 250px;
-          }
-          .title {
-            color: rgb(197, 118, 0);
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-          }
-          .main-btn {
-            display: block;
-            width: 100%;
-            background: rgb(63, 63, 151);
-            color: rgb(255, 255, 255);
-            border: none;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            cursor: pointer;
-            text-align: left;
-            font-size: 15px;
-          }
-          .btn {
-            display: block;
-            width: 100%;
-            background: white;
-            color: blue;
-            border: none;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            cursor: pointer;
-            text-align: left;
-            font-size: 15px;
-          }
-          .main-btn::before {
-            content: "› ";
-            font-weight: bold;
-          }
-          .group.active.active .main-btn::before {
-            content: "⌄ ";
-          }
-          .subgroup {
-            display: none;
-            margin-top: 10px;
-          }
-          .group.active .subgroup {
-            display: block;
-          }
-          .subgroup-title {
-            background: none;
-            border: none;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: left;
-            padding: 5px 0;
-            cursor: pointer;
-            color: #333;
-          }
-          .subgroup-title::before {
-            content: "› ";
-            font-weight: bold;
-          }
-          .subgroup.active .subgroup-title::before {
-            content: "⌄ ";
-          }
-          .subgroup-content {
-            display: none;
-            margin-left: 12px;
-          }
-          .subgroup.active .subgroup-content {
-            display: block;
-          }
-        </style>
-      </head>
-      <body>
-        <!-- HTML aqui -->
-        <div class="container">
-          <!-- Coloque aqui o HTML dos botões -->
-        </div>
-      </body>
-    </html>
+    <div class="container">
+	<!-- V1.1 -->
+	<!-- Coluna 1: tags gerais -->
+	<div class="column">
+		<h3 class="title">TAGs Gerais</h3>
+		<button class="btn" data-action="Al.correta">Alternativa correta</button>
+		<button class="btn" data-action="coluna_f">Coluna falsa</button>
+		<button class="btn" data-action="cotas">Cotas</button>
+		<button class="btn" data-action="destaque">Destaque</button>
+		<button class="btn" data-action="destaque.glos">Destaque glossário</button>
+		<button class="btn" data-action="destaque.hip">Destaque hiperlink</button>
+		<button class="btn" data-action="lacuna">Lacuna</button>
+		<button class="btn" data-action="linha">Linha</button>
+		<button class="btn" data-action="pagina">Página X</button>
+		<button class="btn" data-action="paginaxx">Página X e X</button>
+		<button class="btn" data-action="titulo">Título</button>
+	</div>
+
+	<!-- Coluna 2: tags selos -->
+	<div class="column">
+		<h3 class="title">Específicas</h3>
+
+		<div class="group">
+			<button class="main-btn">CQT AF</button>
+			<div class="sub-buttons">
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="atividades_CQT">Atividades</button>
+						<button class="btn" data-action="conectado_CQT">Conectado</button>
+						<button class="btn" data-action="conquistar">Conquistar-se</button>
+						<button class="btn" data-action="curiosidade_CQT">Curiosidade</button>
+						<button class="btn" data-action="emocoes">Emoções em pauta</button>
+						<button class="btn" data-action="ideias_CQT">Ideias em ação</button>
+						<button class="btn" data-action="conquistei">O que já conquistei</button>
+						<button class="btn" data-action="pesquisa_CQT">Pesquisa</button>
+						<button class="btn" data-action="saiba_CQT">Saiba mais</button>
+						<button class="btn" data-action="troca">Troca de ideias</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções ING</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="activities">Activities</button>
+						<button class="btn" data-action="around">Around the world</button>
+						<button class="btn" data-action="goals">Goals</button>
+						<button class="btn" data-action="action">In action</button>
+						<button class="btn" data-action="know">Know yourself</button>
+						<button class="btn" data-action="language">Language in use</button>
+						<button class="btn" data-action="listen">Lets listen</button>
+						<button class="btn" data-action="see">Lets see it again</button>
+						<button class="btn" data-action="start">Lets start</button>
+						<button class="btn" data-action="look">Look it up</button>
+						<button class="btn" data-action="reading">Reading</button>
+						<button class="btn" data-action="sing">Sing along</button>
+						<button class="btn" data-action="speaking">Speaking</button>
+						<button class="btn" data-action="thinking">Thinking together</button>
+						<button class="btn" data-action="going_to_see">What you are going to see</button>
+						<button class="btn" data-action="writing">Writing</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções ART</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="brasileira">Arte brasileira</button>
+						<button class="btn" data-action="festa">Em festa</button>
+						<button class="btn" data-action="galeria">Galeria</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções CIE</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="pratica_CQT">Ciência em prática</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções GEO</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="cartografica">Leitura cartográfica</button>
+						<button class="btn" data-action="geografico">Olhar geográfico</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções HIS</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="documentos_CQT">Interpretando documentos</button>
+						<button class="btn" data-action="historias_CQT">Outras histórias</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções POR</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="escreve_CQT">Como se escreve</button>
+						<button class="btn" data-action="lingua_CQT">Estudo da língua</button>
+						<button class="btn" data-action="texto_CQT">Estudo do texto</button>
+						<button class="btn" data-action="texto_escrito">Produção de texto escrito</button>
+						<button class="btn" data-action="texto_oral">Produção de texto oral</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções MAT</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="problemas_CQT">Criar e resolver problemas</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções EDF</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="olhar">Ampliando o olhar</button>
+						<button class="btn" data-action="partida">Ponto de partida</button>
+						<button class="btn" data-action="final">Reflexão final</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Ícones</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="audio_CQT">Áudio</button>
+						<button class="btn" data-action="caderno_CQT">Caderno</button>
+						<button class="btn" data-action="calculadora_CQT">Calculadora</button>
+						<button class="btn" data-action="ciencias_CQT">Ciências</button>
+						<button class="btn" data-action="cuidado">Cuidado</button>
+						<button class="btn" data-action="desafio_CQT">Desafio</button>
+						<button class="btn" data-action="grupo_CQT">Grupo</button>
+						<button class="btn" data-action="material_CQT">Material extra</button>
+						<button class="btn" data-action="voz_CQT">Voz</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="subgroup">
+				<button class="subgroup-title">Boxes</button>
+				<div class="subgroup-content">
+					<button class="btn" data-action="citacao">Citação</button>
+					<button class="btn" data-action="destaque_CQT">Destaque</button>
+					<button class="btn" data-action="exercicio_CQT">Exercício</button>
+					<button class="btn" data-action="geral_CQT">Geral</button>
+					<button class="btn" data-action="glossario_CQT">Glossário</button>
+					<button class="btn" data-action="hiperlink_CQT">Hiperlink</button>
+					<button class="btn" data-action="internet_CQT">Internet</button>
+					<button class="btn" data-action="jornal_CQT">Jornal</button>
+					<button class="btn" data-action="explicativo">Texto explicativo</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="group">
+			<button class="main-btn">PIA AI</button>
+			<div class="sub-buttons">
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="atividades_PIA">Atividades</button>
+						<button class="btn" data-action="construindo_PIA">Construindo ideias</button>
+						<button class="btn" data-action="acao_PIA">Em ação</button>
+						<button class="btn" data-action="fazer_PIA">Fazer e aprender</button>
+						<button class="btn" data-action="pesquisa">Pesquisa</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Ícones</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="interessante">Interessante</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Boxes</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="geral">Geral</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="group">
+			<button class="main-btn">SAE</button>
+			<div class="sub-buttons">
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="conversa_vai">Conversa vai</button>
+						<button class="btn" data-action="conversa_vem">Conversa vem</button>
+						<button class="btn" data-action="glossario">Glossário</button>
+						<button class="btn" data-action="organizando">Organizando o conhecimento</button>
+						<button class="btn" data-action="para_saber">Para saber mais</button>
+						<button class="btn" data-action="saberes">Saberes em ação</button>
+						<button class="btn" data-action="testando">Testando as ideias</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções AI</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="agora_voce">Agora você já sabe</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções AF</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="conectando">Conectando os pontos</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Ícones</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="audio_sae">Áudio</button>
+						<button class="btn" data-action="caderno">Caderno</button>
+						<button class="btn" data-action="oralidade">Oralidade</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Boxes</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="conjunto">Conjunto</button>
+						<button class="btn" data-action="observacao">Observação</button>
+						<button class="btn" data-action="procedimento">Procedimento</button>
+						<button class="btn" data-action="resolucao">Resolução</button>
+						<button class="btn" data-action="conceito">Sistematização/conceito</button>
+						<button class="btn" data-action="situacao">Situação</button>
+						<button class="btn" data-action="trecho">Trecho</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Boxes POR</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="exemplo">Exemplo</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="group">
+			<button class="main-btn">SPE AF</button>
+			<div class="sub-buttons">
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="proposta_1">Proposta 1</button>
+						<button class="btn" data-action="proposta_2">Proposta 2</button>
+						<button class="btn" data-action="proposta_3">Proposta 3</button>
+						<button class="btn" data-action="proposta_4">Proposta 4</button>
+						<button class="btn" data-action="proposta_5">Proposta 5</button>
+						<button class="btn" data-action="proposta_6">Proposta 6</button>
+						<button class="btn" data-action="proposta_7">Proposta 7</button>
+						<button class="btn" data-action="proposta_8">Proposta 8</button>
+
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Boxes</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="geral">Geral</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="group">
+			<button class="main-btn">SPE EM</button>
+			<div class="sub-buttons">
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="atividades">Atividades</button>
+						<button class="btn" data-action="conexoes">Conexões</button>
+						<button class="btn" data-action="foco">Foco na aprovação</button>
+						<button class="btn" data-action="gabarito">Gabarito</button>
+						<button class="btn" data-action="objetivos">Objetivos do capítulo</button>
+						<button class="btn" data-action="organize">Organize as ideias</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções ART</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="coisas_da_gente">Coisas da gente</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções BIO/FIS/QUI</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="fazendo_ciencia">Fazendo ciência</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções FIL</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="reflexao_em_acao">Reflexão em ação</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções GEO</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="geografia_em_foco">Geografia em foco</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções HIS</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="interpretando">Interpretando documentos</button>
+						<button class="btn" data-action="voce_faz_historia">Você faz história</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções LIT</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="oficina">Oficina de texto</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções MAT</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="em_acao">Matemática em ação</button>
+						<button class="btn" data-action="em_detalhes">Matemática em detalhes</button>
+						<button class="btn" data-action="em_teste">Matemática em teste</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Seções MPV</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="inicio_de_conversa">Para início de conversa</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Ícones</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="atividades_facil">Atividades fácil</button>
+						<button class="btn" data-action="atividades_medio">Atividades médio</button>
+						<button class="btn" data-action="atividades_dificil">Atividades difícil</button>
+						<button class="btn" data-action="audio_spe">Áudio</button>
+					</div>
+				</div>
+
+				<div class="subgroup">
+					<button class="subgroup-title">Boxes</button>
+					<div class="subgroup-content">
+						<button class="btn" data-action="citacao">Citação</button>
+						<button class="btn" data-action="box_destaque">Destaque</button>
+						<button class="btn" data-action="geral">Geral</button>
+						<button class="btn" data-action="box_glossario">Glossário</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+</div>
+</div>

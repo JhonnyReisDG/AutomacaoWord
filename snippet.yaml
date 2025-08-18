@@ -1955,8 +1955,7 @@ template:
     </div>
     </div>
 
-template:
-  content: |
+    <style>
     /* V1 */
   
     .container {
@@ -2056,4 +2055,6 @@ template:
     .subgroup.active .subgroup-content {
       display: block;
     }
+    </style>
     
+
